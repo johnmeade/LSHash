@@ -2,6 +2,17 @@
 LSHash
 ======
 
+Modifications
+==============
+
+Modified August 2017 by John Meade
+* add python 3 support
+* return hash values in `index` method
+* add public `hashes` method to get hashes for a query point
+
+Originl Readme
+===============
+
 :Version: 0.0.4dev
 
 A fast Python implementation of locality sensitive hashing with persistance

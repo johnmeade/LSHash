@@ -92,7 +92,7 @@ class LSHash(object):
                     self.uniform_planes = [t[1] for t in npzfiles]
             else:
                 self.uniform_planes = [self._generate_uniform_planes()
-                                       for _ in xrange(self.num_hashtables)]
+                                       for _ in range(self.num_hashtables)]
                 try:
                     np.savez_compressed(self.matrices_filename,
                                         *self.uniform_planes)
@@ -101,14 +101,14 @@ class LSHash(object):
                     raise
         else:
             self.uniform_planes = [self._generate_uniform_planes()
-                                   for _ in xrange(self.num_hashtables)]
+                                   for _ in range(self.num_hashtables)]
 
     def _init_hashtables(self):
         """ Initialize the hash tables such that each record will be in the
         form of "[storage1, storage2, ...]" """
 
         self.hash_tables = [storage(self.storage_config, i)
-                            for i in xrange(self.num_hashtables)]
+                            for i in range(self.num_hashtables)]
 
     def _generate_uniform_planes(self):
         """ Generate uniformly distributed hyperplanes and return it as a 2D
@@ -200,9 +200,31 @@ class LSHash(object):
         else:
             value = tuple(input_point)
 
+        hashes = []
         for i, table in enumerate(self.hash_tables):
-            table.append_val(self._hash(self.uniform_planes[i], input_point),
-                             value)
+            h =  self._hash(self.uniform_planes[i], input_point)
+            hashes.append(h)
+            table.append_val(h, value)
+        return hashes
+
+    def hashes(self, input_point):
+        """ Compute hashes for an input point, without adding it to the tables.
+
+        :param input_point:
+            A list, or tuple, or numpy ndarray object that contains numbers
+            only. The dimension needs to be 1 * `input_dim`.
+            This object will be converted to Python tuple and stored in the
+            selected storage.
+        """
+
+        if isinstance(input_point, np.ndarray):
+            input_point = input_point.tolist()
+
+        hashes = []
+        for i, table in enumerate(self.hash_tables):
+            h =  self._hash(self.uniform_planes[i], input_point)
+            hashes.append(h)
+        return hashes
 
     def query(self, query_point, num_results=None, distance_func=None):
         """ Takes `query_point` which is either a tuple or a list of numbers,
