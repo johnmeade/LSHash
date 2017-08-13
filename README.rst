@@ -6,9 +6,21 @@ Modifications
 ==============
 
 Modified August 2017 by John Meade
-* add python 3 support
-* return hash values in `index` method
-* add public `hashes` method to get hashes for a query point
+
+- add python 3 support
+- return hash values in `index` method
+- add public `hashes` method to get hashes for a query point
+
+In brief,
+
+.. code-block:: python
+
+    >>> lsh = LSHash(6, 8, num_hashtables=3)
+    >>> lsh.index([2,3,4,5,6,7,8,9])
+    ['011111', '011011', '000001']
+    >>> lsh.hashes([2,3,4,5,6,7,8,9]) # does not add point to hashtables
+    ['011111', '011011', '000001']
+
 
 Originl Readme
 ===============
