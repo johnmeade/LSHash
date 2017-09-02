@@ -147,7 +147,7 @@ class LSHash(object):
         the original input points stored, and returns the original input point
         in numpy array format.
         """
-        if isinstance(json_or_tuple, basestring):
+        if isinstance(json_or_tuple, str):
             # JSON-serialized in the case of Redis
             try:
                 # Return the point stored as list, without the extra data
@@ -242,8 +242,9 @@ class LSHash(object):
         :param distance_func:
             (optional) The distance function to be used. Currently it needs to
             be one of ("hamming", "euclidean", "true_euclidean",
-            "centred_euclidean", "cosine", "l1norm"). By default "euclidean"
-            will used.
+            "centred_euclidean", "cosine", "l1norm"), or a custom function
+            that compares your query_point to a numpy array.
+            By default "euclidean" will used.
         """
 
         candidates = set()
@@ -265,7 +266,9 @@ class LSHash(object):
 
         else:
 
-            if distance_func == "euclidean":
+            if callable(distance_func):
+                d_func = distance_func
+            elif distance_func == "euclidean":
                 d_func = LSHash.euclidean_dist_square
             elif distance_func == "true_euclidean":
                 d_func = LSHash.euclidean_dist
